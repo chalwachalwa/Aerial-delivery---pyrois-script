@@ -1,81 +1,181 @@
 include("include/SOVIETInstructions.txt");
-defineVariable(int, _numberOfBuildings);
-defineVariable(int, _buildingId);
-defineVariable(int, _stopIndex);
 defineVariable(int, _stopBuildingId);
-defineVariable(int, _c);
-defineVariable(int, _d);
 defineVariable(Building, _building);
 defineVariable(Resources, _resources);
-
 defineVariable(int, _numberOfVehicles);
 defineVariable(Vehicle, _vehicle);
-defineVariable(int, i);
+defineVariable(vec3, vector);
 
+defineVariable(int, i);
+defineVariable(int, j);
+defineVariable(int, k);
+defineVariable(int, m);
 defineVariable(int, _vehicleIndex);
+
 defineVariable(int, _random);
+defineVariable(int, _minEventsInterval);
+defineVariable(int, _eventsRandomInterval);
+defineVariable(int, _nextEventWaiting);
+defineVariable(int, _eventType);
+defineVariable(int, _eventTypesCount);
+defineVariable(int, _eventTime);
+defineVariable(float, _deliveredResources);
+defineVariable(float, _resourcesToDeliver);
+defineVariable(char, _deliveryPending);
+
+//defineArray(int[100], _planesIndexes);
+defineArray(int[20], _departuredPlanes);
+defineArray(float[20], _departuredPlanesCargo);
+defineVariable(int, _departedPlaneIndex);
+defineVariable(char, _planeIsOnDepartureList);
 
 defineFunction(main, void)
 {
-		InitConstants();
-		
+	InitConstants();
+	
+	// main loop
+	while(1 ? 1)
+	{
+		// new random time interval for next event
 		Random(_random);
-		//_random = _random % 5;
-		_random = 2;
-		 
-		Objectives_CreateNewString("delivery", "Soviet delivery");
-	    Objective_AddRequirement("delivery", 100.0, "resources/eletronics.png");
-		 
+		//debug
+		//_minEventsInterval = 30 * 60;
+		//_eventsRandomInterval = 90 * 60;
+		_minEventsInterval = 3;
+		_eventsRandomInterval = 2;
+		_nextEventWaiting = _minEventsInterval + _random % _eventsRandomInterval;
 		
-		while(i < _random)
+		// wait for next event
+		for (i = 0, i < _nextEventWaiting, i = i + 1)
 		{
-			// get vehicles
-			Vehicle_GetNumberOfVehicles(_numberOfVehicles);   
-			for (_vehicleIndex = 0, _vehicleIndex < _numberOfVehicles, _vehicleIndex = _vehicleIndex + 1)
+			Script_Sleep(1.0);
+		}
+		 
+		// handle event
+		
+		// rng event type
+		Random(_random);
+		//debug
+		//_eventType = _random % _eventTypesCount;
+		_eventType = 0;
+		_deliveryPending = 1;
+		if(_eventType ? 0)
+		{
+			Objectives_CreateNewString("delivery", "Soviet delivery");
+			_resourcesToDeliver = 12.0;
+			Objective_AddRequirement("delivery", _resourcesToDeliver, "resources/eletronics.png");
+		
+			Notification_CreateNewStringPic(
+			"Aerial delivery",
+			"Deliver 20t of electronics",
+			"resources/airplanes.png",
+			vector);
+			
+			_departedPlaneIndex = 0;
+			_eventTime = 10 * 60;
+			//event time counter
+			//for (j = 0, j < _eventTime, j = j + 1)
+			while(_deliveryPending ? 1 & j < _eventTime)
 			{
-				_vehicle.GetDataByIndex(_vehicleIndex);
-				
-				// get airplanes
-				if(_vehicle.nVehicleType ? VEHICLETYPE_AIRPLANE)
+				// get vehicles
+				Vehicle_GetNumberOfVehicles(_numberOfVehicles);   
+				for (_vehicleIndex = 0, _vehicleIndex < _numberOfVehicles, _vehicleIndex = _vehicleIndex + 1)
 				{
-					// airplanes with electronics
-					_resources.GetFromVehicle(_vehicleIndex);
-					if(_resources.eletronics > 5.0)
-					{  
-						
-						_stopBuildingId = _vehicle.nBuilding_StationBuildingID;
-						
-						_building.GetDataByIndex(_stopBuildingId);
-						
-						// is custom
-						if(_building.nType ? BUILDINGTYPE_CUSTOMHOUSE)
-						{
-							Window_ShowText("custom");
+					_vehicle.GetDataByIndex(_vehicleIndex);
+					
+					// get airplanes
+					if(_vehicle.nVehicleType ? VEHICLETYPE_AIRPLANE)
+					{
+						// airplanes with electronics
+						_resources.GetFromVehicle(_vehicleIndex);
+						if(_resources.eletronics > 5.0)
+						{  
+							_stopBuildingId = _vehicle.nBuilding_StationBuildingID;
+							_building.GetDataByIndex(_stopBuildingId);
 							
-						}
-						
-						// buildingId - 41
-						if(_building.nType ? BUILDINGTYPE_CARGO_STATION)
-						{
-							if(_building.nSubType ? BUILDINGSUBTYPE_AIRPLANE)
+							// is custom
+							if(_building.nType ? BUILDINGTYPE_CUSTOMHOUSE)
 							{
-								Window_ShowText("cargo");
+								_planeIsOnDepartureList = 0;
+								//check if this plane is not on list
+								for (k = 0, k < _departedPlaneIndex + 1, k = k + 1)
+								{
+									if(_departuredPlanes[k] > 0)
+									{
+										_planeIsOnDepartureList = 1;
+									}
+								}
+								if(_planeIsOnDepartureList ? 0)
+								{
+									// add departing planes
+									_departuredPlanes[k] = _vehicleIndex;
+									_departuredPlanesCargo[k] = _resources.eletronics;
+									_departedPlaneIndex = _departedPlaneIndex + 1;
+								}
+								
 							}
 						}
 					}
-					else()
+				}
+				
+				// all departed planes. Check if they are arriving
+				_deliveredResources = 0.0;
+				for (m = 0, m < _departedPlaneIndex + 1, m = m + 1)
+				{
+					_vehicleIndex = _departuredPlanes[m];
+					_vehicle.GetDataByIndex(_vehicleIndex);
+					
+					_stopBuildingId = _vehicle.nBuilding_StationBuildingID;
+					_building.GetDataByIndex(_stopBuildingId);
+					
+					_resources.GetFromVehicle(_vehicleIndex);
+					
+					// if this is emptied plane heading to terminal
+					if(_resources.eletronics < 1.0 & _building.nType ? BUILDINGTYPE_CARGO_STATION & _building.nSubType ? BUILDINGSUBTYPE_AIRPLANE)
 					{
-						Window_ShowText("xD 2");
+						Window_ShowText("dupa");
+						// add cargo that was departed
+						_deliveredResources = _deliveredResources + _departuredPlanesCargo[m];
 					}
 				}
+				if(_deliveredResources > _resourcesToDeliver)
+				{
+					Objective_SetComplete("delivery");
+					Notification_CreateNewStringPic(
+						"Delivery completed",
+						"You exported all required products. You will be rewarded with additional bonus.",
+						"editor/status_ok.png",
+						vector);
+					_deliveryPending = 0;
+					Script_Sleep(10.0);
+				}
+				else()
+				{
+					Objective_UpdateRequirement("delivery", 0, _deliveredResources);
+				}
+				
+				
+				Script_Sleep(1.0);
+				j = j + 1;
 			}
+			if(_deliveryPending ? 1)
+			{
+				Notification_CreateNewStringPic(
+						"Delivery failed",
+						"The time for delivery is over.",
+						"editor/status_notok.png",
+						vector);
+			}
+			Objectives_ClearAll();
 			
-			Script_Sleep(1.0);
-			i = i + 1;
+			// clear departuredPlanes
+			for (k = 0, k < 20, k = k + 1)
+			{
+				_departuredPlanes[k] = 0;
+				_departuredPlanesCargo[k] = 0.0;
+			}
 		}
-		
-		Objectives_ClearAll();
-		
-		
+	}
 	end();
 }
+
