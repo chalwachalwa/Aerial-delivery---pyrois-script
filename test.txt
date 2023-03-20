@@ -1,0 +1,81 @@
+include("include/SOVIETInstructions.txt");
+defineVariable(int, _numberOfBuildings);
+defineVariable(int, _buildingId);
+defineVariable(int, _stopIndex);
+defineVariable(int, _stopBuildingId);
+defineVariable(int, _c);
+defineVariable(int, _d);
+defineVariable(Building, _building);
+defineVariable(Resources, _resources);
+
+defineVariable(int, _numberOfVehicles);
+defineVariable(Vehicle, _vehicle);
+defineVariable(int, i);
+
+defineVariable(int, _vehicleIndex);
+defineVariable(int, _random);
+
+defineFunction(main, void)
+{
+		InitConstants();
+		
+		Random(_random);
+		//_random = _random % 5;
+		_random = 2;
+		 
+		Objectives_CreateNewString("delivery", "Soviet delivery");
+	    Objective_AddRequirement("delivery", 100.0, "resources/eletronics.png");
+		 
+		
+		while(i < _random)
+		{
+			// get vehicles
+			Vehicle_GetNumberOfVehicles(_numberOfVehicles);   
+			for (_vehicleIndex = 0, _vehicleIndex < _numberOfVehicles, _vehicleIndex = _vehicleIndex + 1)
+			{
+				_vehicle.GetDataByIndex(_vehicleIndex);
+				
+				// get airplanes
+				if(_vehicle.nVehicleType ? VEHICLETYPE_AIRPLANE)
+				{
+					// airplanes with electronics
+					_resources.GetFromVehicle(_vehicleIndex);
+					if(_resources.eletronics > 5.0)
+					{  
+						
+						_stopBuildingId = _vehicle.nBuilding_StationBuildingID;
+						
+						_building.GetDataByIndex(_stopBuildingId);
+						
+						// is custom
+						if(_building.nType ? BUILDINGTYPE_CUSTOMHOUSE)
+						{
+							Window_ShowText("custom");
+							
+						}
+						
+						// buildingId - 41
+						if(_building.nType ? BUILDINGTYPE_CARGO_STATION)
+						{
+							if(_building.nSubType ? BUILDINGSUBTYPE_AIRPLANE)
+							{
+								Window_ShowText("cargo");
+							}
+						}
+					}
+					else()
+					{
+						Window_ShowText("xD 2");
+					}
+				}
+			}
+			
+			Script_Sleep(1.0);
+			i = i + 1;
+		}
+		
+		Objectives_ClearAll();
+		
+		
+	end();
+}
