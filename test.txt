@@ -23,7 +23,6 @@ defineVariable(float, _deliveredResources);
 defineVariable(float, _resourcesToDeliver);
 defineVariable(char, _deliveryPending);
 
-//defineArray(int[100], _planesIndexes);
 defineArray(int[20], _departuredPlanes);
 defineArray(int[20], _arrivingPlanes);
 defineArray(float[20], _departuredPlanesCargo);
@@ -35,6 +34,11 @@ defineVariable(float, _time);
 
 defineVariable(float, _returnValue);
 defineVariable(float, _resourcesAmount);
+
+defineVariable(float, UNKNOWN);
+defineVariable(float, HEADING_BORDER);
+defineVariable(float, HEADING_AIRPORT);
+
 
 
 defineStruct(Plane, 106)
@@ -87,6 +91,9 @@ defineFunction(ResourcesGetFromEventType, float, int: typeOfEvent)
 defineFunction(main, void)
 {
 	InitConstants();
+	UNKNOWN = 0;
+	HEADING_BORDER = 1;
+	HEADING_AIRPORT = 2;
 	
 	// main loop
 	while(1 ? 1)
@@ -118,7 +125,7 @@ defineFunction(main, void)
 		Objectives_CreateNewString("delivery", "Soviet delivery");
 		
 		SetupTarget(_eventType);
-		Objective_AddRequirement("delivery", 15.0, "editor/status_waiting.png");
+		Objective_AddRequirement("delivery", 10.0, "editor/status_waiting.png");
 	
 		Notification_CreateNewStringPic(
 		"Aerial delivery",
@@ -127,7 +134,7 @@ defineFunction(main, void)
 		vector);
 		
 		_departedPlanesCount = 0;
-		_eventTime = 15 * 60;
+		_eventTime = 10 * 60;
 		_time = 0.0;
 		//event time counter
 		while(_deliveryPending ? 1 & j < _eventTime)
@@ -160,6 +167,7 @@ defineFunction(main, void)
 						_currentPlane = _planes[_currentPlaneIndex];
 						_currentPlane.lastState = _currentPlane.state;
 						// check if is heading to border with cargo
+						// todo: validate if custom is NATO or Soviet
 						if(_resourcesAmount > 2.0 & _building.nType ? BUILDINGTYPE_CUSTOMHOUSE)
 						{
 							// just departure from terminal
@@ -168,7 +176,7 @@ defineFunction(main, void)
 								Window_ShowText("kolejny wylot");
 								_currentPlane.lastCargo = _resourcesAmount;
 							}
-							_currentPlane.state = 1;
+							_currentPlane.state = HEADING_BORDER;
 						}
 						
 						// check if is heading to airport
@@ -177,14 +185,13 @@ defineFunction(main, void)
 							// check if empty
 							if(_resourcesAmount < 1.0)
 							{
-								_currentPlane.state = 2;
+								_currentPlane.state = HEADING_AIRPORT;
 							}
 						}
 						
 						// just departure from border
-						if(_currentPlane.lastState ? 1 & _currentPlane.state ? 2)
+						if(_currentPlane.lastState ? HEADING_BORDER & _currentPlane.state ? HEADING_AIRPORT)
 						{
-							Window_ShowText("przylot");
 							_currentPlane.exported = _currentPlane.exported + _currentPlane.lastCargo;
 							_currentPlane.lastCargo = 0.0;
 						}
@@ -200,10 +207,9 @@ defineFunction(main, void)
 					{
 						if(_resourcesAmount > 2.0 & _building.nType ? BUILDINGTYPE_CUSTOMHOUSE)
 						{  
-								Window_ShowText("pierwszy wylot");
 								_currentPlane.id = _vehicleIndex;
-								_currentPlane.state = 1;
-								_currentPlane.lastState = 1;
+								_currentPlane.state = HEADING_BORDER;
+								_currentPlane.lastState = HEADING_BORDER;
 								_currentPlane.exported = 0.0;
 								_currentPlane.lastCargo = _resourcesAmount;
 								
@@ -213,108 +219,6 @@ defineFunction(main, void)
 					}
 				}
 			}
-		
-		  //###############################################################
-		
-			//// get vehicles
-			//Vehicle_GetNumberOfVehicles(_numberOfVehicles);   
-			//for (_vehicleIndex = 0, _vehicleIndex < _numberOfVehicles, _vehicleIndex = _vehicleIndex + 1)
-			//{
-			//	_vehicle.GetDataByIndex(_vehicleIndex);
-			//	
-			//	// get airplanes
-			//	if(_vehicle.nVehicleType ? VEHICLETYPE_AIRPLANE)
-			//	{
-			//		// airplanes with specified cargo
-			//		_resources.GetFromVehicle(_vehicleIndex);
-			//		_resourcesAmount = ResourcesGetFromEventType(_eventType);
-			//		if(_resourcesAmount > 2.0)
-			//		{  
-			//			_stopBuildingId = _vehicle.nBuilding_StationBuildingID;
-			//			_building.GetDataByIndex(_stopBuildingId);
-			//			
-			//			// plane is heading to custom
-			//			// todo: validate if custom is NATO or Soviet
-			//			if(_building.nType ? BUILDINGTYPE_CUSTOMHOUSE)
-			//			{
-			//				_planeIsOnDepartureList = 0;
-			//				_planeIsOnArrivalList = 0;
-			//				//check if this plane is not on list
-			//				for (k = 0, k < _departedPlanesCount + 1, k = k + 1)
-			//				{
-			//					if(_departuredPlanes[k] ? _vehicleIndex)
-			//					{
-			//						_planeIsOnDepartureList =_planeIsOnDepartureList + 1;
-			//						_planeIndexInArray = k;
-			//					}
-			//					// todo: plane going second time
-			//					if(_arrivingPlanes[k] ? _vehicleIndex)
-			//					{
-			//						_planeIsOnArrivalList = _planeIsOnArrivalList + 1;
-			//						_planeIndexInArray = k;
-			//					}
-			//				}
-			//				
-			//				if(_planeIsOnDepartureList ? 0 )
-			//				{
-			//					// add departing planes
-			//					// first trip to border
-			//					_departuredPlanes[_departedPlanesCount] = _vehicleIndex;
-			//					_resourcesAmount = ResourcesGetFromEventType(_eventType);
-			//					_departuredPlanesCargo[_departedPlanesCount] = _resourcesAmount;
-			//					_departedPlanesCount = _departedPlanesCount + 1;
-			//				}
-			//				// plane delivered and is making second trip (or more)
-			//				elseif(_planeIsOnArrivalList ? 1)
-			//				{
-			//					
-			//				
-			//					
-			//					
-			//				}
-			//				// plane is heading to border and was already written to _departuredPlanes array
-			//			}
-			//		}
-			//	}
-			//}
-			//
-			//// all departed planes. Check if they are arriving
-			//_deliveredResources = 0.0;
-			//for (m = 0, m < _departedPlanesCount + 1, m = m + 1)
-			//{
-			//	_vehicleIndex = _departuredPlanes[m];
-			//	
-			//	if(_vehicleIndex > 0)
-			//	{
-			//		_vehicle.GetDataByIndex(_vehicleIndex);
-			//		
-			//		_stopBuildingId = _vehicle.nBuilding_StationBuildingID;
-			//		_building.GetDataByIndex(_stopBuildingId);
-			//		
-			//		// if this is emptied plane heading to airport add to arriving planes
-			//		if( _building.nType ? BUILDINGTYPE_CARGO_STATION | _building.nType ? BUILDINGTYPE_AIRPLANE_PARKING)
-			//		{
-			//			_resources.GetFromVehicle(_vehicleIndex);
-			//			_resourcesAmount = ResourcesGetFromEventType(_eventType);
-			//			if(_resourcesAmount < 1.0)
-			//			{
-			//				_arrivingPlanes[m] = _vehicleIndex;
-			//			}
-			//		}
-			//	}
-			//}
-			
-			//##############################################################
-			
-			
-			
-			//for (k = 0, k < _departedPlanesCount + 1, k = k + 1)
-			//{
-			//	if(_arrivingPlanes[k] > 0)
-			//	{
-			//		_deliveredResources = _deliveredResources + _departuredPlanesCargo[k];
-			//	}
-			//}
 			
 			_deliveredResources = 0.0;
 			for (k = 0, k < 20 + 1, k = k + 1)
@@ -361,9 +265,13 @@ defineFunction(main, void)
 		// clear departuredPlanes
 		for (k = 0, k < 20, k = k + 1)
 		{
-			_departuredPlanes[k] = 0;
-			_departuredPlanesCargo[k] = 0.0;
-			_arrivingPlanes[k] = 0;
+			_currentPlane =  _planes[k];
+			_currentPlane.id = 0;
+			_currentPlane.state = UNKNOWN;
+			_currentPlane.lastState = UNKNOWN;
+			_currentPlane.exported = 0.0;
+			_currentPlane.lastCargo = 0.0;
+			_planes[k] = _currentPlane;
 		}
 	}
 	end();
