@@ -105,7 +105,7 @@ defineFunction(main, void)
 								//check if this plane is not on list
 								for (k = 0, k < _departedPlaneIndex + 1, k = k + 1)
 								{
-									if(_departuredPlanes[k] > 0)
+									if(_departuredPlanes[k] ? _vehicleIndex)
 									{
 										_planeIsOnDepartureList = 1;
 									}
@@ -150,13 +150,14 @@ defineFunction(main, void)
 				{
 					if(_arrivingPlanes[k] > 0)
 					{
-						Window_ShowText("dupa");
+						//Window_ShowText("dupa");
 						_deliveredResources = _deliveredResources + _departuredPlanesCargo[k];
 					}
 				}
 				
 				if(_deliveredResources > _resourcesToDeliver)
 				{
+					Objective_UpdateRequirementToTarget("delivery", 0);
 					Objective_SetComplete("delivery");
 					Notification_CreateNewStringPic(
 						"Delivery completed",
