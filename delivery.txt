@@ -35,6 +35,7 @@ defineVariable(int, _departedPlanesCount);
 defineVariable(char, _planeIsOnDepartureList);
 defineVariable(char, _planeIsOnArrivalList);
 defineVariable(float, _time);
+defineVariable(char, _firstTime);
 
 defineVariable(int, _day);
 defineVariable(int, _month);
@@ -224,16 +225,25 @@ defineFunction(main, void)
 	NATO = 0;
 	USSR = 1;
 	
+	_firstTime = 1;
+	
 	// main loop
 	while(1 ? 1)
 	{
 		// new random time interval for next event
 		Random(_random);
-		//todo: remove debug
-		_minEventsInterval = 30 * 60;
-		_eventsRandomInterval = 60 * 60;
-		//_minEventsInterval = 3;
-		//_eventsRandomInterval = 2;
+		if(_firstTime ? 1)
+		{
+			_minEventsInterval = 1;
+			_eventsRandomInterval = 1;
+			_firstTime = 0;
+		}
+		else
+		{
+			_minEventsInterval = 30 * 60;
+			_eventsRandomInterval = 60 * 60;
+		}
+		
 		_nextEventWaiting = _minEventsInterval + _random % _eventsRandomInterval;
 		
 		// wait for next event
