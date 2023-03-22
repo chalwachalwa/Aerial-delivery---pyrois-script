@@ -1,0 +1,237 @@
+defineVariable(int, _stopBuildingId);
+defineVariable(Building, _building);
+defineVariable(Resources, _resources);
+defineVariable(int, _numberOfVehicles);
+defineVariable(Vehicle, _vehicle);
+defineVariable(vec3, vector);
+
+defineVariable(int, i);
+defineVariable(int, j);
+defineVariable(int, k);
+defineVariable(int, m);
+defineVariable(int, _vehicleIndex);
+
+defineVariable(int, _random);
+defineVariable(int, _minEventsInterval);
+defineVariable(int, _eventsRandomInterval);
+defineVariable(int, _nextEventWaiting);
+defineVariable(int, _eventType);
+defineVariable(int, _eventTypesCount);
+defineVariable(float, _eventTime);
+defineVariable(float, _deliveredResources);
+defineVariable(float, _resourcesToDeliver);
+defineVariable(float, _deliveryMultiplayer);
+defineVariable(char, _deliveryPending);
+defineVariable(float, _multiply);
+defineVariable(float, _maxDeliveryTime);
+defineVariable(char, _destination);
+defineVariable(float, _reward);
+defineVariable(int, _rewardInt);
+defineVariable(float, _basePriceRUB);
+defineVariable(float, _basePriceUSD);
+
+defineVariable(int, _departedPlanesCount);
+defineVariable(char, _planeIsOnDepartureList);
+defineVariable(char, _planeIsOnArrivalList);
+defineVariable(float, _time);
+defineVariable(char, _firstTime);
+
+defineVariable(int, _day);
+defineVariable(int, _month);
+defineVariable(int, _year);
+defineVariable(float, _years);
+defineVariable(char, scriptRunning);
+
+defineVariable(float, _returnValue);
+defineVariable(float, _resourcesAmount);
+
+defineVariable(float, UNKNOWN);
+defineVariable(float, HEADING_BORDER);
+defineVariable(float, HEADING_AIRPORT);
+defineVariable(int, EVENT_TYPES_COUNT);
+defineVariable(int, PLANES_ARRAY_SIZE);
+defineVariable(int, NATO);
+defineVariable(int, USSR);
+defineVariable(int, MIN_DAYS_NEXT_EVENT);
+defineVariable(int, MAX_RANDOM_DAYS_NEXT_EVENT);
+defineVariable(float, REWARD_SCALE);
+
+defineStruct(Plane, 106)
+{
+	defineStructVariable(Plane, int, id);
+	// state 1 - heading to border with cargo, 2 - heading to terminal without cargo
+	defineStructVariable(Plane, char, state);
+	defineStructVariable(Plane, char, lastState);
+	defineStructVariable(Plane, float, exported);
+	defineStructVariable(Plane, float, lastCargo);
+}
+defineVariable(Plane, _currentPlane);
+defineArray(Plane[20], _planes);
+defineVariable(int, _currentPlaneIndex);
+
+// This is the most dumb code I ever wrote, 3Division please fix that and add parsing :>
+// 8.31 -> 8
+defineVariable(int, returnValue);
+defineVariable(float, someValue);
+defineFunction(FloatToInt, int, float: value)
+{
+	returnValue = 0;
+	someValue = 0.0;
+	
+	while(someValue < value)
+	{
+		returnValue = returnValue + 1;
+		someValue = someValue + 1.0;
+	}
+	return(returnValue);
+}
+
+defineVariable(float, returnValueFloat);
+defineVariable(int, someValueInt);
+
+// 7.34 -> 7
+defineFunction(IntToFloat, float, int: valueInt)
+{
+	returnValueFloat = 0.0;
+	someValueInt = 0.0;
+	
+	while(someValueInt < valueInt)
+	{
+		returnValueFloat = returnValueFloat + 1.0;
+		someValueInt = someValueInt + 1;
+	}
+	return(returnValueFloat);
+}
+
+defineFunction(SetupTarget, void, int: type)
+{
+	//todo: if antonov is available: nuclear fuel
+
+	// todo: multiply if player has bigger planes
+	Random(_random);
+	_destination = _random % 2;
+	
+	Random(_random);
+	_random = _random % 10;
+	if(_random < 2)
+	{
+		_multiply = 1.0;
+		_maxDeliveryTime = 10.0;
+	}
+	elseif(_random < 4)
+	{
+		_multiply = 1.5;
+		_maxDeliveryTime = 10.0;
+	}
+	elseif(_random < 7)
+	{
+		_multiply = 2.0;
+		_maxDeliveryTime = 12.0;
+	}
+	elseif(_random < 8)
+	{
+		_multiply = 3.0;
+		_maxDeliveryTime = 14.0;
+	}
+	else()
+	{
+		_multiply = 4.0;
+		_maxDeliveryTime = 18.0;
+	}
+	
+	if(type ? 0)
+	{
+		_resourcesToDeliver = 13.0 * _multiply;
+		Objective_AddRequirement("delivery", _resourcesToDeliver, "resources/eletronics.png");
+		_basePriceRUB = 1187.62;
+		_basePriceUSD = 1508.56;
+	}
+	elseif(type ? 1)
+	{
+		_resourcesToDeliver = 19.0 * _multiply;
+		Objective_AddRequirement("delivery", _resourcesToDeliver, "resources/mcomponents.png");
+		_basePriceRUB = 616.75;
+		_basePriceUSD = 753.72;
+	}
+	elseif(type ? 2)
+	{
+		_resourcesToDeliver = 39.0 * _multiply;
+		Objective_AddRequirement("delivery", _resourcesToDeliver, "resources/aluminium.png");
+		_basePriceRUB = 812.21;
+		_basePriceUSD = 1049.48;
+	}
+	elseif(type ? 3)
+	{
+		_resourcesToDeliver = 13.0 * _multiply;
+		Objective_AddRequirement("delivery", _resourcesToDeliver, "resources/ecomponents.png");
+		_basePriceRUB = 1147.5;
+		_basePriceUSD = 1469.17;
+	}
+	elseif(type ? 4)
+	{
+		_resourcesToDeliver = 10.0 * _multiply;
+		Objective_AddRequirement("delivery", _resourcesToDeliver, "resources/chemicals.png");
+		_basePriceRUB = 1057.32;
+		_basePriceUSD = 1371.74;
+	}
+	else()
+	{
+		_resourcesToDeliver = 19.0 * _multiply;
+		Objective_AddRequirement("delivery", _resourcesToDeliver, "resources/clothes.png");
+		_basePriceRUB = 1413.72;
+		_basePriceUSD = 2061.39;
+	}
+	returnVoid();
+}
+
+defineFunction(ResourcesGetFromEventType, float, int: typeOfEvent)
+{
+	// todo: multiply if player has bigger planes
+	if(typeOfEvent ? 0)
+	{
+		_returnValue = _resources.eletronics;
+	}
+	elseif(typeOfEvent ? 1)
+	{
+		_returnValue = _resources.mcomponents;
+	}
+	elseif(typeOfEvent ? 2)
+	{
+		_returnValue = _resources.aluminium;
+	}
+	elseif(typeOfEvent ? 3)
+	{
+		_returnValue = _resources.ecomponents;
+	}
+	elseif(typeOfEvent ? 4)
+	{
+		_returnValue = _resources.chemicals;
+	}
+	elseif(typeOfEvent ? 5)
+	{
+		_returnValue = _resources.clothes;
+	}
+
+	return(_returnValue);
+}
+
+defineFunction(InitScriptConstants, void)
+{
+	UNKNOWN = 0;
+	HEADING_BORDER = 1;
+	HEADING_AIRPORT = 2;
+	EVENT_TYPES_COUNT = 6;
+	PLANES_ARRAY_SIZE = 20;
+	NATO = 0;
+	USSR = 1;
+	
+	// EDIT HERE v
+	
+	MIN_DAYS_NEXT_EVENT = 30;
+	MAX_RANDOM_DAYS_NEXT_EVENT = 60;
+	REWARD_SCALE = 2.0;
+	
+	// EDIT HERE ^
+	
+	returnVoid();
+}

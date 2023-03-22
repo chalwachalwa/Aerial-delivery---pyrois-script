@@ -1,0 +1,21 @@
+Short time events - deliver cargo with planes
+
+This script will enable more oportunities to utilize your cargo terminals.
+
+
+Click delivery script - it will fire new events every 30-90 days. 
+To cancel current event and stop getting new - click cancel script.
+
+You will get reward if you will manage to deliver all cargo with transport planes. 
+Good luck! 
+
+Please report any bugs, issues or crashes.
+
+If you would like to adjust timing and rewards, edit this script:
+"C:\Program Files (x86)\Steam\steamapps\common\SovietRepublic\media_soviet\workshop_wip\2948536446\include\declarations.txt"
+
+at the end:
+
+MIN_DAYS_NEXT_EVENT = 30;
+MAX_RANDOM_DAYS_NEXT_EVENT = 60;
+REWARD_SCALE = 2.0;
