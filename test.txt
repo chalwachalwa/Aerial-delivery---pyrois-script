@@ -105,7 +105,6 @@ defineFunction(SetupTarget, void, int: type)
 	//todo: if antonov is available: nuclear fuel
 
 	// todo: multiply if player has bigger planes
-	// todo: random multiply: 2, 4, 6, 8
 	Random(_random);
 	_destination = _random % 2;
 	
@@ -231,10 +230,10 @@ defineFunction(main, void)
 		// new random time interval for next event
 		Random(_random);
 		//todo: remove debug
-		//_minEventsInterval = 30 * 60;
-		//_eventsRandomInterval = 90 * 60;
-		_minEventsInterval = 3;
-		_eventsRandomInterval = 2;
+		_minEventsInterval = 30 * 60;
+		_eventsRandomInterval = 60 * 60;
+		//_minEventsInterval = 3;
+		//_eventsRandomInterval = 2;
 		_nextEventWaiting = _minEventsInterval + _random % _eventsRandomInterval;
 		
 		// wait for next event
@@ -247,9 +246,7 @@ defineFunction(main, void)
 		
 		// rng event type
 		Random(_random);
-		//todo: remove debug
-		//_eventType = _random % EVENT_TYPES_COUNT;
-		_eventType = 1;
+		_eventType = _random % EVENT_TYPES_COUNT;
 		// destination
 		_deliveryPending = 1;
 		
@@ -400,7 +397,7 @@ defineFunction(main, void)
 				
 				//nato: 1,5% inflation
 				// soviet: 5% inflation
-				Script_Sleep(10.0);
+				Script_Sleep(5.0);
 			}
 			else()
 			{
