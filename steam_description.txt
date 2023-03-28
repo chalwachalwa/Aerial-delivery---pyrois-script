@@ -1,3 +1,6 @@
+Version 1.0.1
+Contribution: https://github.com/chalwachalwa/Aerial-delivery---pyrois-script
+
 Short time events - deliver cargo with planes
 
 This script will enable more oportunities to utilize your cargo terminals.
@@ -12,7 +15,7 @@ Good luck!
 Please report any bugs, issues or crashes.
 
 If you would like to adjust timing and rewards, edit this script:
-"C:\Program Files (x86)\Steam\steamapps\common\SovietRepublic\media_soviet\workshop_wip\2948536446\include\declarations.txt"
+"C:\Program Files (x86)\Steam\steamapps\workshop\content\784150\2948536446\include\declarations.txt"
 
 at the end:
 
