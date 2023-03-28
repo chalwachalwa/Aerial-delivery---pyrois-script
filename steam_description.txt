@@ -29,6 +29,7 @@ at the end:
 MIN_DAYS_NEXT_EVENT = 30;
 MAX_RANDOM_DAYS_NEXT_EVENT = 60;
 REWARD_SCALE = 2.0;
+START_YEAR = 1960;
 
 
 [h2]Contribution[/h2]
