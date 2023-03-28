@@ -55,6 +55,7 @@ defineVariable(int, USSR);
 defineVariable(int, MIN_DAYS_NEXT_EVENT);
 defineVariable(int, MAX_RANDOM_DAYS_NEXT_EVENT);
 defineVariable(float, REWARD_SCALE);
+defineVariable(int, START_YEAR);
 
 defineStruct(Plane, 106)
 {
@@ -68,40 +69,6 @@ defineStruct(Plane, 106)
 defineVariable(Plane, _currentPlane);
 defineArray(Plane[20], _planes);
 defineVariable(int, _currentPlaneIndex);
-
-// This is the most dumb code I ever wrote, 3Division please fix that and add parsing :>
-// 8.31 -> 8
-defineVariable(int, returnValue);
-defineVariable(float, someValue);
-defineFunction(FloatToInt, int, float: value)
-{
-	returnValue = 0;
-	someValue = 0.0;
-	
-	while(someValue < value)
-	{
-		returnValue = returnValue + 1;
-		someValue = someValue + 1.0;
-	}
-	return(returnValue);
-}
-
-defineVariable(float, returnValueFloat);
-defineVariable(int, someValueInt);
-
-// 7.34 -> 7
-defineFunction(IntToFloat, float, int: valueInt)
-{
-	returnValueFloat = 0.0;
-	someValueInt = 0.0;
-	
-	while(someValueInt < valueInt)
-	{
-		returnValueFloat = returnValueFloat + 1.0;
-		someValueInt = someValueInt + 1;
-	}
-	return(returnValueFloat);
-}
 
 defineFunction(SetupTarget, void, int: type)
 {
@@ -230,6 +197,7 @@ defineFunction(InitScriptConstants, void)
 	MIN_DAYS_NEXT_EVENT = 30;
 	MAX_RANDOM_DAYS_NEXT_EVENT = 60;
 	REWARD_SCALE = 2.0;
+	START_YEAR = 1960;
 	
 	// EDIT HERE ^
 	

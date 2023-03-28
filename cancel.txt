@@ -4,10 +4,10 @@ defineVariable(char, scriptRunning);
 defineFunction(main, void)
 {
 	Objectives_ClearAll();
-	Script_Exists("test.txt", scriptRunning);
+	Script_Exists("delivery.txt", scriptRunning);
 	if(scriptRunning ? 1)
 	{
-		Script_DestroyByName("test.txt");
+		Script_DestroyByName("delivery.txt");
 	}
 	end();
 }

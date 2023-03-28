@@ -164,8 +164,9 @@ defineFunction(main, void)
 				_deliveryPending = 0;
 				
 				Date_GetCurrentDate_DMY(_day, _month, _year);
-				_year = _year - 1960;
-				_years = IntToFloat(_year);
+				_year = _year - START_YEAR;
+				//float to int
+				_years = _year;
 				
 				// todo: reward
 				if(_destination ? NATO)
@@ -173,7 +174,8 @@ defineFunction(main, void)
 					_reward = _resourcesToDeliver * _basePriceUSD * REWARD_SCALE;
 					// inflation
 					_reward = _reward * (1.015 ^ _years);
-					_rewardInt =  FloatToInt(_reward);
+					//int to float
+					_rewardInt =  _reward;
 					Money_AddUSD(_rewardInt);
 					
 				}
@@ -182,7 +184,8 @@ defineFunction(main, void)
 					_reward = _resourcesToDeliver * _basePriceUSD * REWARD_SCALE;
 					// inflation
 					_reward = _reward * (1.05 ^ _years);
-					_rewardInt =  FloatToInt(_reward);
+					//int to float
+					_rewardInt =  _reward;
 					Money_AddUSD(_rewardInt);
 				}
 				
