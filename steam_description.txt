@@ -1,18 +1,25 @@
 Version 1.0.1
-Contribution: https://github.com/chalwachalwa/Aerial-delivery---pyrois-script
 
-Short time events - deliver cargo with planes
+
+[h1]Short time events - deliver cargo with planes[/h1]
 
 This script will enable more oportunities to utilize your cargo terminals.
+Please keep in mind scripts are now in early experimental stage and most likely using other scripts will overwrite/clear objectives or anothers. It can also cause random crash to desktop. If this crash is occuring each time doing some activity please contact me or dev support.
 
+[h2]How to use?[/h2]
 
 Click delivery script - it will fire new events every 30-90 days. 
 To cancel current event and stop getting new - click cancel script.
 
-You will get reward if you will manage to deliver all cargo with transport planes. 
+Setup your cargo terminal with storages capable of storing eletronics, mech. comp., el. comp., aluminum, chemicals, clothes. Stockpile them because you have to act quickly. In most cases you have like 10-18 days to complete delivery. 
+
+When event occure assign your cargo planes to route from airport to border. Amount of cargo is round to tons so send a bit more resources than counter shows.
+You will get reward if you will manage to deliver all cargo with transport planes. Reward will be 2 times value of products scaled with mean inflation (it can vary from your real inflation). 
+If you failed to deliver in time mission just ends with no reward. (resources will be exported as always, normal price).
+
 Good luck! 
 
-Please report any bugs, issues or crashes.
+[h2]Fine tuning[/h2]
 
 If you would like to adjust timing and rewards, edit this script:
 "C:\Program Files (x86)\Steam\steamapps\workshop\content\784150\2948536446\include\declarations.txt"
@@ -22,3 +29,7 @@ at the end:
 MIN_DAYS_NEXT_EVENT = 30;
 MAX_RANDOM_DAYS_NEXT_EVENT = 60;
 REWARD_SCALE = 2.0;
+
+
+[h2]Contribution[/h2]
+https://github.com/chalwachalwa/Aerial-delivery---pyrois-script
